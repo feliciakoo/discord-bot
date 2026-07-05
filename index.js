@@ -41,3 +41,13 @@ client.login(process.env.TOKEN)
         console.error("Login FAILED:");
         console.error(err);
     });
+console.log("TOKEN EXISTS:", !!process.env.TOKEN);
+
+client.login(process.env.TOKEN)
+    .then(() => {
+        console.log("Login successful");
+    })
+    .catch((err) => {
+        console.error("LOGIN FAILED:");
+        console.error(err);
+    });
