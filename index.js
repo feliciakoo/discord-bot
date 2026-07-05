@@ -2,9 +2,7 @@ const express = require("express");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 require("dotenv").config();
 
-// --------------------
-// EXPRESS (Render keep-alive)
-// --------------------
+// ---------------- WEB SERVER ----------------
 const app = express();
 
 app.get("/", (req, res) => {
@@ -12,14 +10,11 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-    console.log(`Web server running on port ${PORT}`);
+    console.log("Web server running on port", PORT);
 });
 
-// --------------------
-// DISCORD BOT
-// --------------------
+// ---------------- DISCORD BOT ----------------
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -29,15 +24,15 @@ const client = new Client({
     partials: [Partials.Channel]
 });
 
-// Debugging
-client.on("debug", console.log);
-client.on("error", console.error);
-
-client.once("ready", () => {
-    console.log(`Bot online as ${client.user.tag}`);
+// ONLY error logging (no token printing, no noise)
+client.on("error", (err) => {
+    console.error("Discord error:", err);
 });
 
-// Login with explicit error handling
+client.once("ready", () => {
+    console.log("Bot online as:", client.user.tag);
+});
+
 client.login(process.env.TOKEN)
     .then(() => {
         console.log("Login successful");
