@@ -2,7 +2,9 @@ const express = require("express");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 require("dotenv").config();
 
-// ---------------- WEB SERVER ----------------
+// --------------------
+// STEP 1: EXPRESS SERVER (Render keep-alive)
+// --------------------
 const app = express();
 
 app.get("/", (req, res) => {
@@ -10,11 +12,22 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
     console.log("Web server running on port", PORT);
 });
 
-// ---------------- DISCORD BOT ----------------
+// --------------------
+// STEP 2: DEBUG STARTUP
+// --------------------
+console.log("STEP 1: File loaded");
+console.log("STEP 2: Token exists =", !!process.env.TOKEN);
+
+// --------------------
+// STEP 3: CREATE DISCORD CLIENT
+// --------------------
+console.log("STEP 3: Creating Discord client...");
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -24,28 +37,32 @@ const client = new Client({
     partials: [Partials.Channel]
 });
 
-// ONLY error logging (no token printing, no noise)
-client.on("error", (err) => {
-    console.error("Discord error:", err);
-});
+console.log("STEP 4: Client created");
 
+// --------------------
+// STEP 4: EVENTS
+// --------------------
 client.once("ready", () => {
-    console.log("Bot online as:", client.user.tag);
+    console.log("STEP 6: READY EVENT FIRED");
+    console.log(`Bot online as ${client.user.tag}`);
 });
 
-client.login(process.env.TOKEN)
-    .then(() => {
-        console.log("Login successful");
-    })
-    .catch((err) => {
-        console.error("Login FAILED:");
-        console.error(err);
-    });
-console.log("TOKEN EXISTS:", !!process.env.TOKEN);
+client.on("error", (err) => {
+    console.error("DISCORD ERROR:", err);
+});
+
+client.on("debug", (info) => {
+    console.log("DEBUG:", info);
+});
+
+// --------------------
+// STEP 5: LOGIN
+// --------------------
+console.log("STEP 5: Attempting login...");
 
 client.login(process.env.TOKEN)
     .then(() => {
-        console.log("Login successful");
+        console.log("STEP 7: LOGIN SUCCESSFUL");
     })
     .catch((err) => {
         console.error("LOGIN FAILED:");
