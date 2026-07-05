@@ -20,8 +20,14 @@ const client = new Client({
     ]
 });
 
+client.on("debug", console.log);
+
+client.on("error", console.error);
+
 client.on("ready", () => {
     console.log(`Bot online as ${client.user.tag}`);
 });
 
-client.login(process.env.TOKEN);
+client.login(process.env.TOKEN)
+    .then(() => console.log("Login successful"))
+    .catch(err => console.error("Login failed:", err));
