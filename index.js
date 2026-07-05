@@ -3,7 +3,7 @@ const { Client, GatewayIntentBits, Partials } = require("discord.js");
 require("dotenv").config();
 
 // --------------------
-// STEP 1: EXPRESS SERVER (Render keep-alive)
+// EXPRESS SERVER (Render keep-alive)
 // --------------------
 const app = express();
 
@@ -18,15 +18,16 @@ app.listen(PORT, () => {
 });
 
 // --------------------
-// STEP 2: DEBUG STARTUP
+// DISCORD BOT STARTUP
 // --------------------
 console.log("STEP 1: File loaded");
-console.log("STEP 2: Token exists =", !!process.env.TOKEN);
 
-// --------------------
-// STEP 3: CREATE DISCORD CLIENT
-// --------------------
-console.log("STEP 3: Creating Discord client...");
+// IMPORTANT: Do NOT log token or token details
+if (!process.env.TOKEN) {
+    console.error("ERROR: TOKEN is missing in environment variables!");
+}
+
+console.log("STEP 2: Creating Discord client...");
 
 const client = new Client({
     intents: [
@@ -37,13 +38,12 @@ const client = new Client({
     partials: [Partials.Channel]
 });
 
-console.log("STEP 4: Client created");
+console.log("STEP 3: Client created");
 
 // --------------------
-// STEP 4: EVENTS
+// EVENTS
 // --------------------
 client.once("ready", () => {
-    console.log("STEP 6: READY EVENT FIRED");
     console.log(`Bot online as ${client.user.tag}`);
 });
 
@@ -51,18 +51,18 @@ client.on("error", (err) => {
     console.error("DISCORD ERROR:", err);
 });
 
-client.on("debug", (info) => {
-    console.log("DEBUG:", info);
+client.on("warn", (info) => {
+    console.log("DISCORD WARN:", info);
 });
 
 // --------------------
-// STEP 5: LOGIN
+// LOGIN
 // --------------------
-console.log("STEP 5: Attempting login...");
+console.log("STEP 4: Attempting login...");
 
 client.login(process.env.TOKEN)
     .then(() => {
-        console.log("STEP 7: LOGIN SUCCESSFUL");
+        console.log("LOGIN SUCCESSFUL");
     })
     .catch((err) => {
         console.error("LOGIN FAILED:");
